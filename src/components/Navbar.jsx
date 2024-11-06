@@ -1,14 +1,31 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { BsPerson } from "react-icons/bs";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MdClose } from "react-icons/md";
-import { IoSearchOutline } from "react-icons/io5";
 import Logo from "../assets/logo.png";
-export default function Navbar() {
+import { useNavigate } from "react-router-dom";
+
+export default function Navbar({ show }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const navigate = useNavigate();
+
   const html = document.querySelector("html");
-  html.addEventListener("click", (e) => setIsNavOpen(false));
+  html.addEventListener("click", () => setIsNavOpen(false));
+
+  if (!show) return null;
+
+  const handleLogout = () => {
+    // Perform logout logic here
+    navigate("/"); // Navigate to the login page after logging out
+  };
+
+  const handleSearch = () => {
+    // Perform search logic
+    console.log("Search term:", searchTerm);
+  };
+
   return (
     <Container state={isNavOpen ? 1 : 0}>
       <div className="brand">
@@ -28,11 +45,11 @@ export default function Navbar() {
       </div>
       <div className={`links ${isNavOpen ? "show" : ""}`}>
         <ul>
-          <li>
+          <li className="home">
             <a href="#services">Home</a>
           </li>
           <li>
-            <a href="#destination"> Destination</a>
+            <a href="#destination">Destination</a>
           </li>
           <li>
             <a href="#offer">Offer</a>
@@ -41,20 +58,29 @@ export default function Navbar() {
             <a href="#tour">Tour</a>
           </li>
           <li>
-            <a href="#blog">Blog</a>
+            <a href="#blog">AI Destination Planner</a>
+          </li>
+          <li>
+            <a href="#hotels">Hotels and Stays</a>
+          </li>
+          <li className="book-flights">
+            <a href="#flights">Book Flights</a>
           </li>
         </ul>
       </div>
       <div className="account-info">
-        <div className="account">
-          <span>
-            <BsPerson />
-          </span>
-          <span>My Account</span>
+        <div className="search-bar">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search..."
+          />
+          <button onClick={handleSearch}>Search</button>
         </div>
-        <div className="search">
-          <IoSearchOutline />
-        </div>
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </Container>
   );
@@ -62,65 +88,122 @@ export default function Navbar() {
 
 const Container = styled.nav`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem; /* Increased padding for more space */
+  position: relative;
+
   .brand {
     img {
       cursor: pointer;
+      height: 50px;
+      margin-left:-79px;
     }
   }
+
   .toggle {
-    display: none;
+    display: none; /* Only show this on mobile view */
   }
+
   .links {
+    flex-grow: 1; /* Allow the links section to grow and fill space */
     ul {
       display: flex;
-      gap: 3rem;
+      justify-content: space-between;
       list-style-type: none;
+      margin: 0 20px; /* Added margin for spacing */
+      padding: 0;
+      width: 100%;
+
       li {
         a {
           text-decoration: none;
           color: black;
           cursor: pointer;
           transition: var(--default-transition);
+          padding: 0 10px; /* Added padding to create space around links */
+
           &:hover {
             color: var(--primary-color);
           }
         }
       }
+
+      /* Specific margins for Home and Book Flights */
+      .home {
+        margin-left: 50px; /* Add left margin to Home */
+      }
+      .book-flights {
+        margin-right: 50px; /* Add right margin to Book Flights */
+      }
     }
   }
+
   .account-info {
     display: flex;
-    gap: 2rem;
-    .account {
+    align-items: center;
+    gap: 1.5rem; /* Increased gap between items */
+    margin-left: auto; /* Push account-info to the right */
+    position: relative;
+
+    .search-bar {
       display: flex;
-      gap: 0.5rem;
-      cursor: pointer;
+      align-items: center;
+
+      input {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        width: 200px;
+        margin-right: 0.5rem;
+      }
+
+      button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: var(--default-transition);
+
+        &:hover {
+          background-color: darkred;
+        }
+      }
     }
-    .search {
+
+    .logout-btn {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
       cursor: pointer;
+      transition: var(--default-transition);
+      margin-right: -90px;
+
+      &:hover {
+        background-color: darkred;
+      }
     }
   }
 
   @media screen and (min-width: 280px) and (max-width: 1080px) {
-    position: relative;
-    padding: 1rem 0.5rem;
-    z-index: 10;
     .account-info {
-      display: none;
+      display: none; /* Hide account-info in mobile view */
     }
+
     .brand {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       width: 100%;
     }
+
     .toggle {
       padding-right: 1rem;
       display: block;
       z-index: 1;
     }
+
     .show {
       opacity: 1 !important;
       visibility: visible !important;
@@ -137,11 +220,13 @@ const Container = styled.nav`
       opacity: 0;
       visibility: hidden;
       transition: 0.4s ease-in-out;
+
       ul {
         flex-direction: column;
         text-align: center;
         height: 100%;
         justify-content: center;
+
         li {
           a {
             color: white;

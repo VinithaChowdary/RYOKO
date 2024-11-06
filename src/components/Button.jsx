@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-export default function Button({ text }) {
-  return <Btn>{text}</Btn>;
+
+export default function Button({ text, onClick }) {
+  return <Btn onClick={onClick}>{text}</Btn>;
 }
 
 const Btn = styled.button`
@@ -11,4 +12,10 @@ const Btn = styled.button`
   font-size: 1.1rem;
   color: white;
   cursor: pointer;
+  transition: padding 0.3s ease, background-color 0.3s ease;
+
+  &:hover {
+    padding: 1.2rem 2.4rem; /* Increase padding to make the button bigger */
+    background-color: var(--secondary-color); /* Change to your desired hover color */
+  }
 `;

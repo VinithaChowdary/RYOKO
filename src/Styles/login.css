@@ -1,0 +1,173 @@
+body {
+    background-color: white; /* Background color */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.d-flex {
+    height: 100vh; /* Full height to center vertically */
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    flex-direction: column; /* Stack items vertically */
+}
+
+.d-flex .border {
+    border: 1px solid #ced4da; /* Light grey border for the box */
+    border-radius: 8px; /* Rounded corners */
+}
+
+    /* Yellow background */
+    .d-flex .box {
+        background-color: white;
+    padding: 20px;
+}
+
+
+.shadow {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); /* Light grey shadow */
+}
+
+h5 {
+    color: #343a40; /* Dark text color for the header */
+}
+
+.text-end a, 
+.text-center small a {
+    color: #007bff; /* Bootstrap link color */
+}
+
+.text-center small a:hover {
+    text-decoration: underline; /* Underline on hover for the link */
+}
+
+.btn-primary {
+    background-color: #ffd395; /* Bootstrap primary button color */
+    border: none; /* Remove border */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    border-color: white !important; /* Ensure no border on hover */
+}
+
+.btn-dark {
+    background-color: #007bff; /* Dark button color */
+    border: none; /* Remove border */
+}
+
+.btn-dark:hover {
+    background-color: #0056b3; /* Darker color on hover */
+    border-color: white !important; /* Ensure no border on hover */
+}
+
+.box {
+    padding: 20px;
+}
+
+.signinhead {
+    color: black;
+    font-size: 1.5rem; /* Header font size */
+    margin-bottom: 0.5rem; /* Correct margin */
+}
+
+.signinh {
+    color: #343a40; /* Darker color for subheading */
+    margin-top: 0; /* Remove top margin for closer spacing */
+}
+
+.email, .password {
+    padding: 10px; /* Ensure consistent padding */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for border and shadow */
+    border: 1px solid #ced4da; /* Default border color */
+    border-radius: 7px; /* Rounded corners */
+    width: 100%; /* Full width */
+    box-sizing: border-box; /* Include padding and border in width */
+    height: 40px; /* Set a uniform height for both input fields */
+    margin-bottom: 15px; /* Space between email and password fields */
+}
+
+.email:hover, .password:hover,
+.email:focus, .password:focus {
+    border-color: #007bff; /* Change border color on hover and focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Same shadow effect for both */
+    outline: none; /* Remove default focus outline */
+}
+.email::placeholder,
+.password::placeholder {
+    font-size: 1rem; /* Set a consistent font size for placeholders */
+    color: #6c757d; /* Optional: You can set a color for the placeholder */
+    opacity: 1; /* Ensures that the placeholder is fully opaque */
+}
+
+
+
+
+.invalid {
+    color: red; /* Set the error message color */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 0.8rem; /* Error message font size */
+    margin-top: 5px; /* Spacing above the error message */
+}
+
+.forgot1 {
+    padding-top: 7px;
+    text-decoration: none;
+}
+
+.forgot {
+    font-size: 0.8rem; /* Forgot password font size */
+}
+
+.sb, .google {
+    margin-top: 20px; /* Margin for buttons */
+    height: 40px; /* Standard button height */
+    width: 95%; /* Button width */
+    border-radius: 20px; /* Rounded corners */
+    margin-bottom: 20px;
+    background-color: rgb(62, 146, 191);
+}
+
+.d-flex .sb {
+    margin-top: 20px;
+    background-color: rgb(62, 146, 191) ;/* Additional margin for Sign in button */
+}
+
+.divider-container {
+    font-size: 0.8rem; /* Divider text size */
+    display: flex; /* Use flexbox to align items */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+}
+
+.divider {
+    flex: 1; /* Make the lines take equal space */
+    height: 1px; /* Set the height of the line */
+    width: 70%; /* Width of the line */
+    background-color: #ced4da; /* Line color */
+}
+
+.divider-text {
+    font-weight: bold; /* Make the text bold */
+    color: #343a40; /* Set text color */
+    padding: 0 10px; /* Add padding to the text */
+}
+
+.joinnow {
+    font-size: 1.1rem; /* Font size for 'Join now' */
+    margin-top: 18px; /* Margin for spacing */
+    
+}
+
+.google:hover {
+    background-color: #357AE8; /* Darker blue on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.sb:hover {
+    background-color: #357AE8; /* Darker blue on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.join{
+    color: black;
+}
