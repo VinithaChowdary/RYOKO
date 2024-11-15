@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ReactSlider from "react-slider";
 import HeroImage from "../assets/hero.png";
 import Button from "./Button";
+import Navbar from "./Navbar"; // Import Navbar component
 
 export default function Home() {
   const [checkIn, setCheckIn] = useState("");
@@ -16,6 +17,8 @@ export default function Home() {
 
   return (
     <Section>
+      <Navbar show={true} /> {/* Pass 'show' prop as true */}
+
       <div className="background">
         <img src={HeroImage} alt="Hero" />
       </div>
@@ -73,9 +76,8 @@ export default function Home() {
                   pearling
                   minDistance={500}
                   renderTrack={(props, state) => {
-                    // Get the positions of the thumbs
-                    const left = ((priceRange[0] / 10000) * 100) + "%";
-                    const right = 100 - ((priceRange[1] / 10000) * 100) + "%";
+                    const left = `${(priceRange[0] / 10000) * 100}%`;
+                    const right = `${100 - (priceRange[1] / 10000) * 100}%`;
 
                     return (
                       <div
