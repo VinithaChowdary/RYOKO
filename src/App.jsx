@@ -17,8 +17,8 @@ import Login from "./components/Login";
 const App = () => {
   const location = useLocation();
 
-  // Determine if the current route is the login page
-  const isLoginPage = location.pathname === "/";
+  // Determine if the current route is login, sign-up, or forgot-password
+  const isAuthPage = ["/", "/signup", "/forgot-password"].includes(location.pathname);
 
   // Debugging: Log the current route
   console.log("Current Route:", location.pathname);
@@ -36,24 +36,26 @@ const App = () => {
   return (
     <div>
       <ScrollToTop />
-      <Navbar show={!isLoginPage} /> {/* Pass prop to control Navbar visibility */}
+      {/* Render Navbar unless it's an auth page */}
+      {!isAuthPage && <Navbar />}
+      
+      {/* Define routes once */}
       <Routes>
+        {/* Authentication Routes */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<Forgot />} />
-        <Route path="/home" element={<Home />} />
-      </Routes>
 
-      {/* Components rendered under the Home route */}
-      <Routes>
+        {/* Home and related routes */}
         <Route
           path="/home"
           element={
             <>
+              <Home />
               <Services />
-              <Destinations scrollToTours={scrollToTours} /> {/* Pass scrollToTours to Destinations */}
+              <Destinations scrollToTours={scrollToTours} />
               <Offer />
-              <Tours ref={toursRef} /> {/* Attach ref to the Tours section */}
+              <Tours ref={toursRef} />
               <Testimonial />
               <DownloadApp />
               <Footer />

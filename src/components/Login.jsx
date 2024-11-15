@@ -123,7 +123,7 @@ function Login() {
 
       <div className="join text-center mt-3 joinnow">
         <small>
-          New to Ryoko?{" "}
+          New to Ravel?{" "}
           <Link to="/SignUp" className="text-decoration-none join">
             Join now
           </Link>
