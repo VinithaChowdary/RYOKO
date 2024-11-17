@@ -1,0 +1,18 @@
+.res{
+    margin-bottom: 10px;
+}
+
+.sec{
+    height: 30px;
+}
+
+.custom-link {
+    color: rgb(6, 128, 169);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+  
+  .custom-link:hover {
+    text-decoration: underline;
+  }
+  

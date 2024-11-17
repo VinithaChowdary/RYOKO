@@ -75,103 +75,144 @@ function SignUp() {
     }
   };
 
+  const backgroundImageUrl = "login.png"; // Background image URL
+
   return (
-    <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-      <div className="border p-4 shadow box" style={{ width: "300px", borderRadius: "8px" }}>
-        <h3 className="text-center mb-4 signinhead">Join Us,</h3>
-        <h5 className="signinh">Create an account</h5>
-        {signUpError && <div className="text-danger">{signUpError}</div>} {/* Display signup error */}
+    <div
+      style={{
+        backgroundImage: `url(${backgroundImageUrl})`,  // Path to your image
+        backgroundSize: "cover",  // Ensure the image covers the whole page
+        backgroundPosition: "center",  // Center the image
+        height: "100vh",  // Ensure it takes up the full viewport height
+        width: "100vw",  // Ensure it takes up the full viewport width
+        margin: 0,  // Remove default margin
+        padding: 0,  // Remove default padding
+        position: "absolute",  // Position it absolutely to fill the screen
+        top: 0,
+        left: 0,
+      }}
+    >
+      {/* Overlay to adjust opacity */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.6)",  // Apply a semi-transparent overlay
+        }}
+      ></div>
 
-        <Form onSubmit={handleSubmit}>
-          {/* Name Field */}
-          <Form.Group controlId="formBasicName" className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Name"
-              className="email"
-              value={name}
-              onChange={(e) => setName(e.target.value)} // Update name state
-            />
-          </Form.Group>
+      {/* Content Container */}
+      <div
+        className="d-flex flex-column justify-content-center align-items-center"
+        style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}
+      >
+        {/* Form Container */}
+        <div
+          className="border p-4 shadow box"
+          style={{
+            width: "350px",
+            borderRadius: "8px",
+            backgroundColor: "rgba(255, 255, 255, 0.8)",  // Make form container slightly transparent
+          }}
+        >
+          <h3 className="text-center mb-4 signinhead">Join Us,</h3>
+          <h5 className="signinh">Create an account</h5>
+          {signUpError && <div className="text-danger">{signUpError}</div>} {/* Display signup error */}
 
-          {/* Phone Number Field */}
-          <Form.Group controlId="formBasicPhone" className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Phone Number"
-              className="email"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)} // Update phone state
-            />
-          </Form.Group>
+          <Form onSubmit={handleSubmit}>
+            {/* Name Field */}
+            <Form.Group controlId="formBasicName" className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="Name"
+                className="email"
+                value={name}
+                onChange={(e) => setName(e.target.value)} // Update name state
+              />
+            </Form.Group>
 
-          {/* Email Field */}
-          <Form.Group controlId="formBasicEmail" className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Email"
-              className="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)} // Update email state
-              isInvalid={!!emailError}
-            />
-            <Form.Control.Feedback type="invalid" className="invalid">
-              {emailError} {/* Display error message */}
-            </Form.Control.Feedback>
-          </Form.Group>
+            {/* Phone Number Field */}
+            <Form.Group controlId="formBasicPhone" className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="Phone Number"
+                className="email"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)} // Update phone state
+              />
+            </Form.Group>
 
-          {/* Password Field */}
-          <Form.Group controlId="formBasicPassword" className="mb-3 pp">
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              className="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value); // Update password state
-                setPasswordError(""); // Reset password error
-              }}
-              isInvalid={!!passwordError} // Highlight if password mismatch
-            />
-          </Form.Group>
+            {/* Email Field */}
+            <Form.Group controlId="formBasicEmail" className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="Email"
+                className="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)} // Update email state
+                isInvalid={!!emailError}
+              />
+              <Form.Control.Feedback type="invalid" className="invalid">
+                {emailError} {/* Display error message */}
+              </Form.Control.Feedback>
+            </Form.Group>
 
-          {/* Confirm Password Field */}
-          <Form.Group controlId="formConfirmPassword" className="mb-3 cp">
-            <Form.Control
-              type="password"
-              placeholder="Confirm Password"
-              className="password"
-              value={confirmPassword}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value); // Update confirm password state
-                if (password === e.target.value) {
-                  setPasswordError(""); // Reset error if passwords match
-                } else {
-                  setPasswordError("Passwords do not match.");
-                }
-              }}
-              isInvalid={!!passwordError} // Show invalid state if passwords don't match
-            />
-            <Form.Control.Feedback type="invalid" className="invalid">
-              {passwordError} {/* Display password mismatch error */}
-            </Form.Control.Feedback>
-          </Form.Group>
+            {/* Password Field */}
+            <Form.Group controlId="formBasicPassword" className="mb-3 pp">
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                className="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value); // Update password state
+                  setPasswordError(""); // Reset password error
+                }}
+                isInvalid={!!passwordError} // Highlight if password mismatch
+              />
+            </Form.Group>
 
-          {/* Sign Up Button */}
-          <Button variant="primary" type="submit" className="w-100 mb-3 sb">
-            Sign Up
-          </Button>
-        </Form>
-      </div>
+            {/* Confirm Password Field */}
+            <Form.Group controlId="formConfirmPassword" className="mb-3 cp">
+              <Form.Control
+                type="password"
+                placeholder="Confirm Password"
+                className="password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value); // Update confirm password state
+                  if (password === e.target.value) {
+                    setPasswordError(""); // Reset error if passwords match
+                  } else {
+                    setPasswordError("Passwords do not match.");
+                  }
+                }}
+                isInvalid={!!passwordError} // Show invalid state if passwords don't match
+              />
+              <Form.Control.Feedback type="invalid" className="invalid">
+                {passwordError} {/* Display password mismatch error */}
+              </Form.Control.Feedback>
+            </Form.Group>
 
-      {/* Already have an account? */}
-      <div className="join text-center mt-3 joinnow">
-        <small>
-          Already have an account?{" "}
-          <Link to="/" className="text-decoration-none">
-            Sign in here
-          </Link>
-        </small>
+            {/* Sign Up Button */}
+            <Button variant="primary" type="submit" className="w-100 mb-3 sb">
+              Sign Up
+            </Button>
+
+            {/* Already have an account? */}
+            <div className="join text-center mt-3 joinnow">
+              <small>
+                Already have an account?{" "}
+                <Link to="/" className="text-decoration-none">
+                  Sign in here
+                </Link>
+              </small>
+            </div>
+          </Form>
+        </div>
       </div>
     </div>
   );
