@@ -13,6 +13,7 @@ import Tours from "./components/Tours";
 import SignUp from "./components/SignUp"; 
 import Forgot from "./components/Forgot"; 
 import Login from "./components/Login"; 
+import ChatPopup from "./components/ChatPopup"; // Import ChatPopup component
 
 const App = () => {
   const location = useLocation();
@@ -59,10 +60,14 @@ const App = () => {
               <Testimonial />
               <DownloadApp />
               <Footer />
+              <ChatPopup /> {/* Add ChatPopup component here */}
             </>
           }
         />
       </Routes>
+
+      {/* Global ChatPopup for all pages */}
+      {!isAuthPage && <ChatPopup />} {/* Optionally, show it globally */}
     </div>
   );
 };
