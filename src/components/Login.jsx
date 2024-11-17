@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { auth } from "../firbase"; // Ensure this path is correct
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth"; // Import Firebase functions
+import { auth } from "../firbase";
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import ReCAPTCHA from "react-google-recaptcha"; // Import reCAPTCHA
 import "../Styles/login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [password, setPassword] = useState("");
-  const location = useLocation(); // Hook to access location
+  const [recaptchaValue, setRecaptchaValue] = useState(null); // Store the reCAPTCHA response
+  const location = useLocation();
   const [signupMessage, setSignupMessage] = useState("");
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if there's a message passed from the signup
     if (location.state && location.state.message) {
       setSignupMessage(location.state.message);
     }
@@ -27,19 +28,25 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setEmailError(""); // Reset error message
+    setEmailError("");
+
+    // Check for reCAPTCHA validation
+    if (!recaptchaValue) {
+      setEmailError("Please complete the CAPTCHA.");
+      return;
+    }
+
     if (!validateEmail(email)) {
       setEmailError("Please enter a valid email address.");
     } else {
-      setEmailError(""); // Clear error if valid
+      setEmailError("");
       try {
-        // Sign in the user with email and password
         await signInWithEmailAndPassword(auth, email, password);
         console.log("User logged in successfully");
-        navigate("/home"); // Redirect to Home component
+        navigate("/home");
       } catch (error) {
         console.error("Error logging in:", error);
-        setEmailError("Invalid email or password."); // Set error message for invalid login
+        setEmailError("Invalid email or password.");
       }
     }
   };
@@ -49,22 +56,22 @@ function Login() {
     try {
       await signInWithPopup(auth, provider);
       console.log("User logged in with Google");
-      navigate("/home"); // Redirect to Home component
+      navigate("/home");
     } catch (error) {
       console.error("Error logging in with Google:", error);
     }
   };
 
+  const handleRecaptchaChange = (value) => {
+    setRecaptchaValue(value); // Set the value of reCAPTCHA
+  };
+
   return (
     <div className="d-flex flex-column justify-content-center align-items-center vh-100">
-      <div
-        className="border p-4 shadow box"
-        style={{ width: "300px", borderRadius: "8px" }}
-      >
+      <div className="border p-4 shadow box" style={{ width: "350px", borderRadius: "8px" }}>
         <h3 className="text-center mb-4 signinhead">Welcome Again,</h3>
         <h5 className="signinh">Sign in to continue</h5>
 
-        {/* Display signup message if it exists */}
         {signupMessage && <div className="text-success">{signupMessage}</div>}
 
         <Form onSubmit={handleSubmit}>
@@ -98,6 +105,14 @@ function Login() {
             </Link>
           </div>
 
+          {/* reCAPTCHA Widget */}
+          <div className="mb-3">
+            <ReCAPTCHA
+              sitekey="6LfgvIAqAAAAAIj63e0x6325HNuTF7EQKXcC3EM5" // Replace with your actual site key
+              onChange={handleRecaptchaChange}
+            />
+          </div>
+
           <Button variant="primary" type="submit" className="w-100 mb-3 sb">
             Sign in
           </Button>
@@ -108,26 +123,19 @@ function Login() {
             <hr className="divider" />
           </div>
 
-          <Button 
-  variant="dark" 
-  type="button" 
-  className="w-100 mt-3 google" 
-  onClick={handleGoogleSignIn}
->
-  <i className="fab fa-google me-2"></i> {/* Google icon with margin to the right */}
-  Sign in with Google
-</Button>
-
+          <Button variant="dark" type="button" className="w-100 mt-3 google" onClick={handleGoogleSignIn}>
+            <i className="fab fa-google me-2"></i> Sign in with Google
+          </Button>
         </Form>
-      </div>
 
-      <div className="join text-center mt-3 joinnow">
-        <small>
-          New to Ravel?{" "}
-          <Link to="/SignUp" className="text-decoration-none join">
-            Join now
-          </Link>
-        </small>
+        <div className="join text-center mt-3 joinnow">
+          <small>
+            New to Ryoko?{" "}
+            <Link to="/SignUp" className="text-decoration-none join">
+              Join now
+            </Link>
+          </small>
+        </div>
       </div>
     </div>
   );

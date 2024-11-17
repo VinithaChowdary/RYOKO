@@ -72,7 +72,8 @@ h5 {
 
 .signinh {
     color: #343a40; /* Darker color for subheading */
-    margin-top: 0; /* Remove top margin for closer spacing */
+    margin-top: 0;
+    margin-bottom: 20px;; /* Remove top margin for closer spacing */
 }
 
 .email, .password {
@@ -154,7 +155,8 @@ h5 {
 
 .joinnow {
     font-size: 1.1rem; /* Font size for 'Join now' */
-    margin-top: 18px; /* Margin for spacing */
+    margin-top: 2px; /* Margin for spacing */
+    text-align: center;
     
 }
 
@@ -170,4 +172,5 @@ h5 {
 
 .join{
     color: black;
+    
 }
