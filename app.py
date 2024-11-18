@@ -36,6 +36,7 @@ def chat():
         "Ask the user if they want to continue or end the conversation."
         "Ask less than 3 questions to get the user's preferences."
         "Keep your questions short and crisp."
+        "DON'T ASK QUESTIONS AGAIN AND AGAIN. ONCE ASKED YOU JUST GIVE THE ANSWER the user needs to hear."
     )
 
     try:
