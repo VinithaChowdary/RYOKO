@@ -17,29 +17,16 @@ export default function Navbar({ show }) {
 
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  axios
-    .get("http://localhost:5001/place")
-    .then((response) => {
-      setPlaces(response.data.places);
-      setLoading(false);
-    })
-    .catch((error) => {
-      console.error("Error fetching places:", error);
-      setLoading(false);
-    });
-}, []);
-
-
   useEffect(() => {
     axios
       .get("http://localhost:5001/place")
       .then((response) => {
         setPlaces(response.data.places);
-        console.log("Fetched places:", response.data.places); // Add this line
+        setLoading(false); // Ensure this line is present
       })
       .catch((error) => {
         console.error("Error fetching places:", error);
+        setLoading(false); // Ensure this line is present
       });
   }, []);
 
@@ -88,7 +75,7 @@ useEffect(() => {
 
   if (loading) {
     return <div>Loading...</div>;
-  }  
+  }
 
   return (
     <Container state={isNavOpen ? 1 : 0}>
@@ -144,7 +131,7 @@ useEffect(() => {
             placeholder="Search..."
           />
           <button onClick={handleSearch}>Search</button>
-          {showDropdown && (
+          {showDropdown && places && places.length > 0 && (
             <ul className="dropdown">
               {places
                 .filter((place) =>
@@ -156,11 +143,9 @@ useEffect(() => {
                     {place}
                   </li>
                 ))}
-
             </ul>
           )}
         </div>
-
         <button className="logout-btn" onClick={handleLogout}>
           Logout
         </button>
@@ -189,6 +174,7 @@ const Container = styled.nav`
   }
 
   .links {
+    width: ${({ $state }) => ($state ? "70%" : "0")};
     flex-grow: 1;
     ul {
       display: flex;
