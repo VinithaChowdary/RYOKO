@@ -56,38 +56,7 @@ app.get('/place', (req, res) => {
 
 
 // Endpoint to handle adding tours
-app.post('/addTour', (req, res) => {
-  const { userId, name, title, price, reviews } = req.body;
 
-  // Check if the user exists in the users table
-  const userQuery = 'SELECT * FROM users WHERE id = ?'; // Corrected the column name to 'id'
-  
-  db.query(userQuery, [userId], (err, result) => {
-    if (err) {
-      console.error('Error checking user data:', err);
-      return res.status(500).json({ error: 'Error checking user data' });
-    }
-    
-    if (result.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // If user exists, insert the tour data into the tours table
-    const query = `
-      INSERT INTO tours (user_id, user_name, tour_name, price, reviews)
-      VALUES (?, ?, ?, ?, ?)
-    `;
-
-    db.query(query, [userId, name, title, price, reviews], (err, result) => {
-      if (err) {
-        console.error('Error saving tour data:', err);
-        res.status(500).json({ error: 'Error saving tour data' });
-      } else {
-        res.status(201).json({ message: 'Tour data saved successfully!' });
-      }
-    });
-  });
-});
 
 
 // index.js (Backend)
@@ -96,6 +65,7 @@ app.post('/addTour', (req, res) => {
 // Endpoint to handle fetching hotels for a specific place
 app.post('/getHotels', (req, res) => {
   const { place } = req.body;
+  console.log('Received place:', place);
 
   const query = 'SELECT hotel_name, ratings, stars, price FROM hotels WHERE place_name = ? LIMIT 4';
 
@@ -104,9 +74,11 @@ app.post('/getHotels', (req, res) => {
       console.error('Error fetching hotels:', err);
       return res.status(500).json({ error: 'Error fetching hotels' });
     }
+    console.log('Fetched hotels:', results);
     res.status(200).json({ hotels: results });
   });
 });
+
 
 
 // Endpoint to fetch all place names from the hotels table

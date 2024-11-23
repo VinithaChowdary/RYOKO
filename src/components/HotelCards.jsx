@@ -1,3 +1,5 @@
+// HotelCards.jsx
+
 import React from 'react';
 import styled from 'styled-components';
 
@@ -27,18 +29,18 @@ const CardContainer = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: left;
   width: 48%;
-  margin: 10px 0;
+  margin: 10px 1%;
 
   &:hover {
     transform: translateY(-5px);
   }
 
   @media screen and (max-width: 768px) {
-    width: 45%;
+    width: 98%;
   }
 
   @media screen and (max-width: 480px) {
-    width: 90%;
+    width: 98%;
   }
 `;
 
