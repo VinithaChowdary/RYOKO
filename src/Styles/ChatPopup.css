@@ -1,8 +1,8 @@
 .chat-popup-wrapper {
   position: fixed;
-  bottom: 120px; /* Move above the ScrollToTop button */
-  right: 40px; /* Align with ScrollToTop horizontally */
+  right: 40px;
   z-index: 1000;
+  transition: bottom 0.3s ease-in-out;
 }
 
 .chat-icon {

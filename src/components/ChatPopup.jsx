@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../Styles/ChatPopup.css";
 
 const ChatPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([{ text: "Namaste! How can I assist you?", sender: "bot" }]);
   const [newMessage, setNewMessage] = useState("");
+  const [isScrollToTopVisible, setIsScrollToTopVisible] = useState(false);
 
   const toggleChat = () => setIsOpen(!isOpen);
 
@@ -37,8 +38,23 @@ const ChatPopup = () => {
     }
   };
 
+  useEffect(() => {
+    // Listen for scroll events to track the ScrollToTop button visibility
+    const handleScroll = () => {
+      setIsScrollToTopVisible(window.pageYOffset > 100);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <div className="chat-popup-wrapper">
+    <div
+      className="chat-popup-wrapper"
+      style={{ bottom: isScrollToTopVisible ? "120px" : "40px" }}
+    >
       <div className="chat-icon" onClick={toggleChat}>
         💬
       </div>
