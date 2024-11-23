@@ -1,3 +1,5 @@
+// index.js
+
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
@@ -41,9 +43,9 @@ app.post('/signup', (req, res) => {
   });
 });
 
-// Endpoint to fetch all place names from the hotels table
+// Endpoint to fetch all unique place names from the Hotels table
 app.get('/place', (req, res) => {
-  const query = 'SELECT place_name FROM hotels';
+  const query = 'SELECT DISTINCT place_name FROM Hotels'; // Corrected table name
 
   db.query(query, (err, results) => {
     if (err) {
@@ -54,46 +56,50 @@ app.get('/place', (req, res) => {
   });
 });
 
-
-// Endpoint to handle adding tours
-
-
-
-// index.js (Backend)
-
-// Endpoint to handle fetching hotels for a specific place
-// Endpoint to handle fetching hotels for a specific place
+// Endpoint to handle fetching hotels based on place and price range
 app.post('/getHotels', (req, res) => {
-  const { place } = req.body;
+  let { place, priceMin, priceMax } = req.body;
   console.log('Received place:', place);
+  console.log('Received priceMin:', priceMin);
+  console.log('Received priceMax:', priceMax);
 
-  const query = 'SELECT hotel_name, ratings, stars, price FROM hotels WHERE place_name = ? LIMIT 4';
+  // Parse priceMin and priceMax to numbers
+  priceMin = parseFloat(priceMin);
+  priceMax = parseFloat(priceMax);
+  console.log('Parsed priceMin:', priceMin);
+  console.log('Parsed priceMax:', priceMax);
 
-  db.query(query, [place], (err, results) => {
+  // Build the SQL query dynamically based on the parameters
+  let query = 'SELECT * FROM Hotels WHERE 1=1'; // Corrected table name
+  const params = [];
+
+  if (place) {
+    query += ' AND LOWER(place_name) = LOWER(?)'; // Case-insensitive comparison
+    params.push(place);
+  }
+
+  if (!isNaN(priceMin)) {
+    query += ' AND price >= ?';
+    params.push(priceMin);
+  }
+
+  if (!isNaN(priceMax)) {
+    query += ' AND price <= ?';
+    params.push(priceMax);
+  }
+
+  console.log('Executing query:', query);
+  console.log('With parameters:', params);
+
+  db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error fetching hotels:', err);
       return res.status(500).json({ error: 'Error fetching hotels' });
     }
-    console.log('Fetched hotels:', results);
-    res.status(200).json({ hotels: results });
+    console.log('Hotels found:', results.length);
+    res.json({ hotels: results });
   });
 });
-
-
-
-// Endpoint to fetch all place names from the hotels table
-app.get('/place', (req, res) => {
-  const query = 'SELECT DISTINCT place_name FROM hotels'; // Use DISTINCT to avoid duplicates
-
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Error fetching places:', err);
-      return res.status(500).json({ error: 'Error fetching places' });
-    }
-    res.status(200).json({ places: results });
-  });
-});
-
 
 // Start the server
 const PORT = 5001;

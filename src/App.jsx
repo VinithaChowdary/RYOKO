@@ -9,11 +9,13 @@ import Offer from "./components/Offer";
 import ScrollToTop from "./components/ScrollToTop";
 import Services from "./components/Services";
 import Testimonial from "./components/Testimonial";
-import Tours from "./components/Tours"; 
-import SignUp from "./components/SignUp"; 
-import Forgot from "./components/Forgot"; 
-import Login from "./components/Login"; 
+import Tours from "./components/Tours";
+import SignUp from "./components/SignUp";
+import Forgot from "./components/Forgot";
+import Login from "./components/Login";
 import SearchResults from "./components/SearchResults"; // New component for search results
+import Discover from "./components/Discover"; // Ensure Discover component is imported
+import Flightbookings from "./components/Flightbookins";
 
 const App = () => {
   const location = useLocation();
@@ -49,32 +51,41 @@ const App = () => {
 
         {/* Home and related routes */}
         <Route
-          path="/home"
-          element={
-            <>
-              <Home />
-              <Services />
-              <Destinations scrollToTours={scrollToTours} />
-              <Offer />
-              <Tours ref={toursRef} />
-              <Testimonial />
-              <DownloadApp />
-              <Footer />
-            </>
-          }
-        />
+  path="/home"
+  element={
+    <>
+      <Home />
+      <Services />
+      <Destinations scrollToTours={scrollToTours} />
+      <Offer />
+      <Tours ref={toursRef} />
+      <div style={{ marginBottom: "7rem" }}> {/* Add spacing here */}
+        <Flightbookings />
+      </div>
+      <div style={{ marginTop: "3rem" }}> {/* Add spacing here */}
+        <Testimonial />
+      </div>
+      <DownloadApp />
+      <Footer />
+    </>
+  }
+/>
+
 
         {/* Search Results Route */}
         <Route
           path="/search"
           element={
             <>
-               {/* Ensure Navbar is shown for SearchResults page */}
+              {/* Ensure Navbar is shown for SearchResults page */}
               <SearchResults />
               <Footer />
             </>
           }
         />
+
+        {/* Discover Route */}
+        <Route path="/discover" element={<Discover />} />
       </Routes>
     </div>
   );
