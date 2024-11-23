@@ -15,18 +15,33 @@ export default function Navbar({ show }) {
   const navigate = useNavigate();
   const location = useLocation(); // Use location to track current page
 
+  const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  axios
+    .get("http://localhost:5001/place")
+    .then((response) => {
+      setPlaces(response.data.places);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching places:", error);
+      setLoading(false);
+    });
+}, []);
+
+
   useEffect(() => {
     axios
       .get("http://localhost:5001/place")
       .then((response) => {
         setPlaces(response.data.places);
-        console.log('Fetched places:', response.data.places); // Add this line
+        console.log("Fetched places:", response.data.places); // Add this line
       })
       .catch((error) => {
         console.error("Error fetching places:", error);
       });
   }, []);
-  
 
   // Clear searchTerm after navigating to the search page
   useEffect(() => {
@@ -36,7 +51,7 @@ export default function Navbar({ show }) {
   }, [location]);
 
   const handleLogout = () => {
-    navigate("/"); 
+    navigate("/");
   };
 
   const handleSearch = () => {
@@ -44,25 +59,24 @@ export default function Navbar({ show }) {
     setSearchTerm(""); // Clear search bar after search
   };
 
-// This is your existing handlePlaceClick function in Navbar.jsx
+  // This is your existing handlePlaceClick function in Navbar.jsx
 
-const handlePlaceClick = async (placeName) => {
-  try {
-    setSearchTerm(placeName);
-    setShowDropdown(false);
+  const handlePlaceClick = async (placeName) => {
+    try {
+      setSearchTerm(placeName);
+      setShowDropdown(false);
 
-    // Send selected place to the backend
-    const response = await axios.post("http://localhost:5001/getHotels", { place: placeName });
+      // Send selected place to the backend
+      const response = await axios.post("http://localhost:5001/getHotels", {
+        place: placeName,
+      });
 
-    // Redirect to the search page with fetched hotels
-    navigate("/search", { state: { hotels: response.data.hotels } });
-  } catch (error) {
-    console.error("Error fetching hotels:", error);
-  }
-};
-
-  
-  
+      // Redirect to the search page with fetched hotels
+      navigate("/search", { state: { hotels: response.data.hotels } });
+    } catch (error) {
+      console.error("Error fetching hotels:", error);
+    }
+  };
 
   const handleSearchFocus = () => {
     setShowDropdown(true);
@@ -71,6 +85,10 @@ const handlePlaceClick = async (placeName) => {
   const handleSearchBlur = () => {
     setTimeout(() => setShowDropdown(false), 100);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }  
 
   return (
     <Container state={isNavOpen ? 1 : 0}>
@@ -130,25 +148,19 @@ const handlePlaceClick = async (placeName) => {
             <ul className="dropdown">
               {places
                 .filter((place) =>
-                  place.place_name
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
+                  place.toLowerCase().includes(searchTerm.toLowerCase())
                 )
-                .map(
-                  (place, index, self) =>
-                    self.findIndex((p) => p.place_name === place.place_name) ===
-                      index && (
-                      <li
-                        key={index}
-                        onClick={() => handlePlaceClick(place.place_name)}
-                      >
-                        {place.place_name}
-                      </li>
-                    )
-                )}
+                .sort()
+                .map((place, index) => (
+                  <li key={index} onClick={() => handlePlaceClick(place)}>
+                    {place}
+                  </li>
+                ))}
+
             </ul>
           )}
         </div>
+
         <button className="logout-btn" onClick={handleLogout}>
           Logout
         </button>
