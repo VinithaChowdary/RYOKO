@@ -1,29 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MdClose } from "react-icons/md";
 import Logo from "../assets/logo.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // useLocation to track current route
+import axios from "axios";
 
 export default function Navbar({ show }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [places, setPlaces] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation(); // Use location to track current page
 
-  const html = document.querySelector("html");
-  html.addEventListener("click", () => setIsNavOpen(false));
+  useEffect(() => {
+    axios
+      .get("http://localhost:5001/place")
+      .then((response) => {
+        setPlaces(response.data.places);
+        console.log('Fetched places:', response.data.places); // Add this line
+      })
+      .catch((error) => {
+        console.error("Error fetching places:", error);
+      });
+  }, []);
+  
 
-  if (!show) return null;
+  // Clear searchTerm after navigating to the search page
+  useEffect(() => {
+    if (location.pathname.includes("/search")) {
+      setSearchTerm(""); // Clear the searchTerm when on search page
+    }
+  }, [location]);
 
   const handleLogout = () => {
-    // Perform logout logic here
-    navigate("/"); // Navigate to the login page after logging out
+    navigate("/"); 
   };
 
   const handleSearch = () => {
-    // Perform search logic
-    console.log("Search term:", searchTerm);
+    navigate(`/search?term=${searchTerm}`);
+    setSearchTerm(""); // Clear search bar after search
+  };
+
+// This is your existing handlePlaceClick function in Navbar.jsx
+
+const handlePlaceClick = async (placeName) => {
+  try {
+    setSearchTerm(placeName);
+    setShowDropdown(false);
+
+    // Send selected place to the backend
+    const response = await axios.post("http://localhost:5001/getHotels", { place: placeName });
+
+    // Redirect to the search page with fetched hotels
+    navigate("/search", { state: { hotels: response.data.hotels } });
+  } catch (error) {
+    console.error("Error fetching hotels:", error);
+  }
+};
+
+  
+  
+
+  const handleSearchFocus = () => {
+    setShowDropdown(true);
+  };
+
+  const handleSearchBlur = () => {
+    setTimeout(() => setShowDropdown(false), 100);
   };
 
   return (
@@ -68,15 +114,40 @@ export default function Navbar({ show }) {
           </li>
         </ul>
       </div>
+
       <div className="account-info">
-        <div className="search-bar">
+        <div className="search-bar" onClick={(e) => e.stopPropagation()}>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onFocus={handleSearchFocus}
+            onBlur={handleSearchBlur}
             placeholder="Search..."
           />
           <button onClick={handleSearch}>Search</button>
+          {showDropdown && (
+            <ul className="dropdown">
+              {places
+                .filter((place) =>
+                  place.place_name
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                )
+                .map(
+                  (place, index, self) =>
+                    self.findIndex((p) => p.place_name === place.place_name) ===
+                      index && (
+                      <li
+                        key={index}
+                        onClick={() => handlePlaceClick(place.place_name)}
+                      >
+                        {place.place_name}
+                      </li>
+                    )
+                )}
+            </ul>
+          )}
         </div>
         <button className="logout-btn" onClick={handleLogout}>
           Logout
@@ -90,28 +161,28 @@ const Container = styled.nav`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem; /* Increased padding for more space */
+  padding: 1rem 2rem;
   position: relative;
 
   .brand {
     img {
       cursor: pointer;
       height: 50px;
-      margin-left:-79px;
+      margin-left: -79px;
     }
   }
 
   .toggle {
-    display: none; /* Only show this on mobile view */
+    display: none;
   }
 
   .links {
-    flex-grow: 1; /* Allow the links section to grow and fill space */
+    flex-grow: 1;
     ul {
       display: flex;
       justify-content: space-between;
       list-style-type: none;
-      margin: 0 20px; /* Added margin for spacing */
+      margin: 0 20px;
       padding: 0;
       width: 100%;
 
@@ -121,7 +192,7 @@ const Container = styled.nav`
           color: black;
           cursor: pointer;
           transition: var(--default-transition);
-          padding: 0 10px; /* Added padding to create space around links */
+          padding: 0 10px;
 
           &:hover {
             color: var(--primary-color);
@@ -129,12 +200,11 @@ const Container = styled.nav`
         }
       }
 
-      /* Specific margins for Home and Book Flights */
       .home {
-        margin-left: 50px; /* Add left margin to Home */
+        margin-left: 50px;
       }
       .book-flights {
-        margin-right: 50px; /* Add right margin to Book Flights */
+        margin-right: 50px;
       }
     }
   }
@@ -142,13 +212,14 @@ const Container = styled.nav`
   .account-info {
     display: flex;
     align-items: center;
-    gap: 1.5rem; /* Increased gap between items */
-    margin-left: auto; /* Push account-info to the right */
+    gap: 1.5rem;
+    margin-left: auto;
     position: relative;
 
     .search-bar {
       display: flex;
       align-items: center;
+      position: relative;
 
       input {
         border: 1px solid #ccc;
@@ -167,6 +238,31 @@ const Container = styled.nav`
 
         &:hover {
           background-color: darkred;
+        }
+      }
+
+      .dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: white;
+        border: 1px solid #ccc;
+        list-style: none;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 0;
+        margin-top: 5px;
+        z-index: 1000;
+
+        li {
+          padding: 0.5rem;
+          cursor: pointer;
+          transition: background-color 0.3s;
+
+          &:hover {
+            background-color: #f0f0f0;
+          }
         }
       }
     }
@@ -188,7 +284,7 @@ const Container = styled.nav`
 
   @media screen and (min-width: 280px) and (max-width: 1080px) {
     .account-info {
-      display: none; /* Hide account-info in mobile view */
+      display: none;
     }
 
     .brand {
@@ -214,25 +310,17 @@ const Container = styled.nav`
       overflow-x: hidden;
       top: 0;
       right: 0;
-      width: ${({ state }) => (state ? "60%" : "0%")};
+      width: ${({ state }) => (state ? "70%" : "0")};
       height: 100vh;
-      background-color: var(--primary-color);
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.4s ease-in-out;
+      background-color: #fff;
+      padding-top: 3rem;
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
 
-      ul {
-        flex-direction: column;
-        text-align: center;
-        height: 100%;
-        justify-content: center;
-
-        li {
-          a {
-            color: white;
-          }
-        }
-      }
+    .links ul {
+      flex-direction: column;
+      gap: 2rem;
     }
   }
 `;

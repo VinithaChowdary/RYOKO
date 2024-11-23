@@ -41,6 +41,20 @@ app.post('/signup', (req, res) => {
   });
 });
 
+// Endpoint to fetch all place names from the hotels table
+app.get('/place', (req, res) => {
+  const query = 'SELECT place_name FROM hotels';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching places:', err);
+      return res.status(500).json({ error: 'Error fetching places' });
+    }
+    res.status(200).json({ places: results });
+  });
+});
+
+
 // Endpoint to handle adding tours
 app.post('/addTour', (req, res) => {
   const { userId, name, title, price, reviews } = req.body;
@@ -74,6 +88,40 @@ app.post('/addTour', (req, res) => {
     });
   });
 });
+
+
+// index.js (Backend)
+
+// Endpoint to handle fetching hotels for a specific place
+// Endpoint to handle fetching hotels for a specific place
+app.post('/getHotels', (req, res) => {
+  const { place } = req.body;
+
+  const query = 'SELECT hotel_name, ratings, stars, price FROM hotels WHERE place_name = ? LIMIT 4';
+
+  db.query(query, [place], (err, results) => {
+    if (err) {
+      console.error('Error fetching hotels:', err);
+      return res.status(500).json({ error: 'Error fetching hotels' });
+    }
+    res.status(200).json({ hotels: results });
+  });
+});
+
+
+// Endpoint to fetch all place names from the hotels table
+app.get('/place', (req, res) => {
+  const query = 'SELECT DISTINCT place_name FROM hotels'; // Use DISTINCT to avoid duplicates
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching places:', err);
+      return res.status(500).json({ error: 'Error fetching places' });
+    }
+    res.status(200).json({ places: results });
+  });
+});
+
 
 // Start the server
 const PORT = 5001;

@@ -40,3 +40,41 @@ html {
 ::-webkit-scrollbar-thumb {
   background-color: #ff715b;
 }
+
+
+/* Add to your main CSS file (e.g., App.css or index.css) */
+.hotel-cards-container {
+  display: flex;
+  flex-direction: column; /* Stack the rows vertically */
+  gap: 20px; /* Space between rows */
+  padding: 20px;
+}
+
+.hotel-card-wrapper {
+  display: flex;
+  justify-content: space-between; /* Distribute space evenly between cards */
+  gap: 20px; /* Space between cards */
+}
+
+.hotel-card-wrapper > .card {
+  width: 78%; /* Adjust the width to 48% for two cards per row */
+}
+
+/* Add to your main CSS file */
+.hotel-cards-container {
+  display: flex;
+  flex-direction: column; /* Stack the rows vertically */
+  gap: 20px; /* Space between rows */
+  padding: 20px;
+}
+
+.hotel-card-wrapper {
+  display: flex;
+  justify-content: space-between; /* Distribute space evenly between cards */
+  gap: 20px; /* Space between cards */
+}
+
+.hotel-card-wrapper > .card {
+  width: 48%; /* Adjust the width to 48% for two cards per row */
+}
+

@@ -17,8 +17,7 @@ export default function Home() {
 
   return (
     <Section>
-      <Navbar show={true} /> {/* Pass 'show' prop as true */}
-
+    
       <div className="background">
         <img src={HeroImage} alt="Hero" />
       </div>

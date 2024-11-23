@@ -13,6 +13,7 @@ import Tours from "./components/Tours";
 import SignUp from "./components/SignUp"; 
 import Forgot from "./components/Forgot"; 
 import Login from "./components/Login"; 
+import SearchResults from "./components/SearchResults"; // New component for search results
 
 const App = () => {
   const location = useLocation();
@@ -37,9 +38,9 @@ const App = () => {
     <div>
       <ScrollToTop />
       {/* Render Navbar unless it's an auth page */}
-      {!isAuthPage && <Navbar />}
-      
-      {/* Define routes once */}
+      {!isAuthPage && <Navbar show={true} />} {/* Show navbar explicitly */}
+
+      {/* Define routes */}
       <Routes>
         {/* Authentication Routes */}
         <Route path="/" element={<Login />} />
@@ -58,6 +59,18 @@ const App = () => {
               <Tours ref={toursRef} />
               <Testimonial />
               <DownloadApp />
+              <Footer />
+            </>
+          }
+        />
+
+        {/* Search Results Route */}
+        <Route
+          path="/search"
+          element={
+            <>
+               {/* Ensure Navbar is shown for SearchResults page */}
+              <SearchResults />
               <Footer />
             </>
           }
