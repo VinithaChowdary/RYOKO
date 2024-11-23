@@ -9,7 +9,7 @@ const cors = require('cors');
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root', // Your MySQL username
-  password: 'vinitha_2004', // Your MySQL password
+  password: '<YOUR_PASSWORD>', // Your MySQL password
   database: 'ryoko' // The name of your database
 });
 
@@ -45,7 +45,7 @@ app.post('/signup', (req, res) => {
 
 // Endpoint to fetch all unique place names from the Hotels table
 app.get('/place', (req, res) => {
-  const query = 'SELECT DISTINCT place_name FROM Hotels'; // Corrected table name
+  const query = 'SELECT DISTINCT place_name FROM Hotels';
 
   db.query(query, (err, results) => {
     if (err) {
@@ -70,7 +70,7 @@ app.post('/getHotels', (req, res) => {
   console.log('Parsed priceMax:', priceMax);
 
   // Build the SQL query dynamically based on the parameters
-  let query = 'SELECT * FROM Hotels WHERE 1=1'; // Corrected table name
+  let query = 'SELECT * FROM Hotels WHERE 1=1';
   const params = [];
 
   if (place) {

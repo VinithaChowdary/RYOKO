@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar"; // Ensure Navbar is imported
 import HotelCard from "./HotelCards";  // HotelCard component for rendering each hotel
 import Testimonial from "./Testimonial"; // Import Testimonial component
-import { useLocation } from "react-router-dom"; // Import useLocation to access navigation state
+import { useLocation, useNavigate } from "react-router-dom"; // Import useLocation and useNavigate
 import axios from 'axios';
 
 import hotel1 from "../assets/hotel1.jpeg";
@@ -46,6 +46,7 @@ const SearchResults = () => {
 
   // Access the hotels data passed via navigation state
   const location = useLocation();
+  const navigate = useNavigate();
   const { hotels } = location.state || {};
 
   // Get the search term from the query parameters
@@ -53,6 +54,7 @@ const SearchResults = () => {
   const term = searchParams.get('term');
 
   useEffect(() => {
+    console.log('Term:', term); // Debugging statement
     if (hotels && hotels.length > 0) {
       // If hotels data is passed via location.state, use it
       setHotelData(hotels);
@@ -71,24 +73,17 @@ const SearchResults = () => {
           // Optionally handle the error, e.g., set a message or default data
         });
     } else {
-      // If no data is available, set default data
-      const defaultHotels = [
-        { hotel_name: "Hotel 1", ratings: "100", stars: "4", price: "200" },
-        { hotel_name: "Hotel 2", ratings: "150", stars: "5", price: "250" },
-        { hotel_name: "Hotel 3", ratings: "80", stars: "3", price: "150" },
-        { hotel_name: "Hotel 4", ratings: "120", stars: "4", price: "220" },
-      ];
-      setHotelData(defaultHotels);
-      const images = getRandomImages(defaultHotels.length);
-      setSelectedImages(images);
+      // If no data is available, redirect to home or show message
+      console.log('No term provided in URL. Redirecting to home.');
+      navigate('/');
     }
-  }, [hotels, term]);
+  }, [hotels, term, navigate]);
 
   // Keep your existing layout with minimal changes
   return (
     <div>
-      {/* Include Navbar if needed */}
-     
+      {/* Include Navbar */}
+      
 
       {/* Display Hotel Cards in two containers per row */}
       <div className="hotel-cards-container">
@@ -113,7 +108,7 @@ const SearchResults = () => {
             </div>
           ))
         ) : (
-          <p>No hotels found.</p>
+          <p>No hotels found for "{term}". Please try a different location.</p>
         )}
       </div>
 
