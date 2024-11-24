@@ -15,6 +15,7 @@ import Forgot from "./components/Forgot";
 import Login from "./components/Login";
 import SearchResults from "./components/SearchResults"; // New component for search results
 import Discover from "./components/Discover"; // Ensure Discover component is imported
+import ChatPopup from "./components/ChatPopup"; // Import ChatPopup component
 import Flightbookings from "./components/Flightbookins";
 
 const App = () => {
@@ -67,6 +68,7 @@ const App = () => {
       </div>
       <DownloadApp />
       <Footer />
+      <ChatPopup /> {/* Add ChatPopup component here */}
     </>
   }
 />
@@ -87,6 +89,9 @@ const App = () => {
         {/* Discover Route */}
         <Route path="/discover" element={<Discover />} />
       </Routes>
+
+      {/* Global ChatPopup for all pages */}
+      {!isAuthPage && <ChatPopup />} {/* Optionally, show it globally */}
     </div>
   );
 };
