@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FaChevronUp } from "react-icons/fa";
-function ScrollToTop() {
+
+function ScrollToTop({ onVisibilityChange }) {
   const [visible, setVisible] = useState(false);
-  window.addEventListener("scroll", () => {
-    window.pageYOffset > 100 ? setVisible(true) : setVisible(false);
-  });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isVisible = window.pageYOffset > 100;
+      setVisible(isVisible);
+      onVisibilityChange(isVisible); // Notify parent component about visibility change
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [onVisibilityChange]);
 
   return (
     <Div>

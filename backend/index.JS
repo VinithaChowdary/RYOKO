@@ -1,7 +1,7 @@
 // index.js
 
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2'); // Use mysql2 instead of mysql
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
@@ -10,7 +10,7 @@ const db = mysql.createConnection({
   host: 'localhost',
   user: 'root', // Your MySQL username
   password: 'vinitha_2004', // Your MySQL password
-  database: 'ryoko' // The name of your database
+  database: 'ryoko', // The name of your database
 });
 
 // Connect to the database
@@ -47,14 +47,15 @@ app.post('/signup', (req, res) => {
 
 // Endpoint to fetch all unique place names from the Hotels table
 app.get('/place', (req, res) => {
-  const query = 'SELECT DISTINCT place_name FROM Hotels';
+  const query = 'SELECT place_name FROM hotels GROUP BY place_name ORDER BY place_name ASC';
 
   db.query(query, (err, results) => {
     if (err) {
       console.error('Error fetching places:', err);
       return res.status(500).json({ error: 'Error fetching places' });
     }
-    res.status(200).json({ places: results });
+    const placeNames = results.map((result) => result.place_name);
+    res.status(200).json({ places: placeNames });
   });
 });
 

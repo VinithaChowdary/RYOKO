@@ -1,0 +1,2 @@
+GRANT ALL PRIVILEGES ON ryoko.* TO 'root'@'localhost' IDENTIFIED BY 'vinitha_2004';
+FLUSH PRIVILEGES;
