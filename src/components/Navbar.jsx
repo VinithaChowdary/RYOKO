@@ -5,15 +5,30 @@ import { MdClose } from "react-icons/md";
 import Logo from "../assets/logo.png";
 import { useNavigate, useLocation } from "react-router-dom"; // useLocation to track current route
 import axios from "axios";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Navbar({ show }) {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [places, setPlaces] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showProfile, setShowProfile] = useState(false); // Toggle profile visibility
+  const [user, setUser] = useState(null); // Store use
 
   const navigate = useNavigate();
   const location = useLocation(); // Use location to track current page
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5001/lastUser") // Endpoint to serve the file
+      .then((response) => {
+        setUser(response.data); // Use the fetched data
+      })
+      .catch((error) => {
+        console.error("Error fetching user data:", error);
+      });
+  }, []);
+  
 
   useEffect(() => {
     axios
@@ -50,6 +65,10 @@ const handlePlaceClick = async (placeName) => {
   try {
     setSearchTerm(placeName);
     setShowDropdown(false);
+
+    const toggleProfile = () => {
+      setShowProfile((prev) => !prev); // Toggle the profile dropdown visibility
+    };
 
     // Send selected place to the backend
     const response = await axios.post("http://localhost:5001/getHotels", { place: placeName });

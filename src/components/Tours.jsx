@@ -7,11 +7,9 @@ import tour3 from "../assets/tour3.png";
 import vector1 from "../assets/vector1.png";
 import vector2 from "../assets/vector2.png";
 import ellipse from "../assets/ellipse.png";
+import axios from "axios";
 
 export default function Tours() {
-  const userId = "currentUserId"; // Replace with logic to get current user ID from Firebase or your authentication method
-  const userName = "User's Name"; // Replace with logic to get user's name from Firebase or authentication state
-
   const data = [
     {
       image: tour1,
@@ -34,30 +32,31 @@ export default function Tours() {
   ];
 
   const handleAddTour = async (tour) => {
-    try {
-      const response = await fetch("http://localhost:5001/addTour", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId, // Send current user's ID
-          name: userName, // Get the user's name from Firebase or authentication state
+    // Confirm with the user before proceeding
+    const isConfirmed = window.confirm('Are you sure you want to book this tour?');
+  
+    if (isConfirmed) {
+      try {
+        // Data to send to backend
+        const tourData = {
           title: tour.title,
           price: tour.price,
-          reviews: tour.reviews,
-        }),
-      });
-      const result = await response.json();
-      if (response.ok) {
-        console.log("Tour added successfully:", result);
-      } else {
-        console.error("Error adding tour:", result.error);
+        };
+  
+        // Send POST request to addTour endpoint
+        const response = await axios.post("http://localhost:5001/addTours", tourData);
+  
+        console.log("Tour booked successfully:", response.data);
+        alert('Tour booked successfully!');
+      } catch (error) {
+        console.error("Error booking tour:", error);
+        alert('Error booking tour.');
       }
-    } catch (error) {
-      console.error("Error:", error);
+    } else {
+      console.log('Tour booking canceled by the user.');
     }
   };
+  
 
   return (
     <Section id="tour">
@@ -92,7 +91,7 @@ export default function Tours() {
                   </div>
                 </div>
               </div>
-              <button onClick={() => handleAddTour({ title, price, reviews })}>+</button>
+              <button onClick={() => handleAddTour({ title, price })}>+</button>
             </div>
           </div>
         ))}

@@ -2,8 +2,36 @@
 
 import React from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const HotelCard = ({ image, name, ratings, stars, price }) => {
+
+  const handleBooking = () => {
+    // Confirm with the user before proceeding
+    const isConfirmed = window.confirm('Are you sure you want to confirm the booking?');
+  
+    if (isConfirmed) {
+      // Data to send to backend
+      const bookingData = {
+        hotel_name: name,
+        price: price
+      };
+  
+      axios.post('http://localhost:5001/bookHotel', bookingData)
+        .then(response => {
+          console.log('Booking successful:', response.data);
+          alert('Booking successful!');
+        })
+        .catch(error => {
+          console.error('Error making booking:', error);
+          alert('Error making booking.');
+        });
+    } else {
+      console.log('Booking canceled by the user.');
+    }
+  };
+  
+
   return (
     <CardContainer>
       <CardContent>
@@ -15,7 +43,7 @@ const HotelCard = ({ image, name, ratings, stars, price }) => {
           <p>{ratings} ratings</p>
           <p>{stars} ⭐</p>
           <p>Price: ${price}</p>
-          <button className="plus-btn">+</button>
+          <button className="plus-btn" onClick={handleBooking}>+</button>
         </DetailsWrapper>
       </CardContent>
     </CardContainer>

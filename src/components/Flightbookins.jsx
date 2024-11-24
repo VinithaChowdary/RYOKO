@@ -14,6 +14,56 @@ export default function FlightBooking() {
   const [price, setPrice] = useState(""); // State to store the price
 
   // Fetch place names when the component mounts
+  const handleBookFlight = async () => {
+    console.log("handleBookFlight triggered");
+  
+    if (!selectedSource || !selectedDestination || !selectedDate || !price) {
+      console.log("Validation failed:", { selectedSource, selectedDestination, selectedDate, price });
+      alert("Please select source, destination, date, and ensure price is available.");
+      return;
+    }
+  
+    if (window.confirm("Do you want to book this flight?")) {
+      alert("Flight booking successful!"); // Display the success alert here
+  
+      const requestData = {
+        source: selectedSource,
+        destination: selectedDestination,
+        travelDate: selectedDate,
+        price: price,
+      };
+  
+      console.log("Sending booking request:", requestData);
+  
+      try {
+        const response = await fetch("http://localhost:5001/bookFlight", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Error booking flight:", errorData);
+          
+        } else {
+          const responseData = await response.json();
+          console.log("Booking response received from backend:", responseData);
+        }
+      } catch (error) {
+        console.error("Error during fetch request:", error);
+       
+      }
+    } else {
+      console.log("Booking canceled by user");
+    }
+  };
+  
+  
+  
+  
   useEffect(() => {
     axios
       .get("http://localhost:5001/place")
@@ -29,14 +79,26 @@ export default function FlightBooking() {
       });
   }, []);
 
-  // Example logic to calculate/display the price
   useEffect(() => {
     if (selectedSource && selectedDestination) {
-      // Mock price calculation logic (you can replace this with actual API logic)
-      const mockPrice = Math.floor(Math.random() * 5000) + 1000; // Random price between 1000 and 5000
-      setPrice(mockPrice);
+      axios
+        .post("http://localhost:5001/getFlightPrice", {
+          source: selectedSource,
+          destination: selectedDestination,
+        })
+        .then((response) => {
+          setPrice(response.data.price); // Update price state with the fetched price
+        })
+        .catch((error) => {
+          console.error("Error fetching flight price:", error);
+          setPrice(""); // Reset price if an error occurs
+        });
+    } else {
+      setPrice(""); // Reset price if source or destination is not selected
     }
   }, [selectedSource, selectedDestination]);
+  
+
 
   return (
     <Section>
@@ -104,7 +166,9 @@ export default function FlightBooking() {
             </div>
 
             <div className="row">
-              <Button text="Book Flight" />
+            <Button text="Book Flight" onClick={handleBookFlight} />
+
+
             </div>
           </form>
         </div>
