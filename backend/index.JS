@@ -43,8 +43,6 @@ app.post('/signup', (req, res) => {
   });
 });
 
-
-
 // Endpoint to fetch all unique place names from the Hotels table
 app.get('/place', (req, res) => {
   const query = 'SELECT DISTINCT place_name FROM Hotels';
@@ -95,13 +93,11 @@ app.post('/getUser', (req, res) => {
     });
   });
 });
+
 app.get("/lastUser", (req, res) => {
   const filePath = path.join(__dirname, "lastUser.json"); // Adjust to match the location of the file
   res.sendFile(filePath);
 });
-
-
-
 
 // Endpoint to handle fetching hotels based on place and price range
 app.post('/getHotels', (req, res) => {
@@ -147,7 +143,6 @@ app.post('/getHotels', (req, res) => {
     res.json({ hotels: results });
   });
 });
-
 
 app.post('/bookHotel', (req, res) => {
   const { hotel_name, price } = req.body;
@@ -208,9 +203,6 @@ app.post('/bookHotel', (req, res) => {
     });
   });
 });
-
-
-
 
 app.post('/addTours', (req, res) => {
   const { title, price } = req.body;
