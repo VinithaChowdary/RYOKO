@@ -1,24 +1,69 @@
-import React, { useState } from "react";
+// home.jsx
+
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import ReactSlider from "react-slider";
 import HeroImage from "../assets/hero.png";
 import Button from "./Button";
 import Navbar from "./Navbar"; // Import Navbar component
+import axios from "axios"; // Import axios for HTTP requests
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 
 export default function Home() {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
-  const [priceRange, setPriceRange] = useState([500, 10000]); // Single state for price range
+  const [priceRange, setPriceRange] = useState([100, 10000]); // Adjusted price range
+  const [places, setPlaces] = useState([]); // State to store place names
+  const [selectedPlace, setSelectedPlace] = useState(""); // State for selected destination
+
+  const navigate = useNavigate(); // Instantiate useNavigate hook
+
+  // Fetch place names when the component mounts
+  useEffect(() => {
+    axios
+      .get("http://localhost:5001/place")
+      .then((response) => {
+        // Use a Set to remove duplicates
+        const uniquePlaces = [
+          ...new Set(response.data.places.map((place) => place.place_name)),
+        ];
+        setPlaces(uniquePlaces);
+        console.log("Unique Places fetched:", uniquePlaces);
+      })
+      .catch((error) => {
+        console.error("Error fetching places:", error);
+      });
+  }, []);
 
   // Handler to update price range when slider is moved
   const handleSliderChange = (newValue) => {
+    console.log("Slider changed:", newValue);
     setPriceRange(newValue);
+  };
+
+  // Handler for the Discover More button click
+  const handleDiscoverMore = (e) => {
+    e.preventDefault();
+    console.log("Selected place:", selectedPlace);
+    console.log("Price range:", priceRange);
+
+    // Build query parameters
+    const queryParams = new URLSearchParams();
+    if (selectedPlace) {
+      queryParams.append('destination', selectedPlace);
+    }
+    if (priceRange.length === 2) {
+      queryParams.append('priceMin', priceRange[0]);
+      queryParams.append('priceMax', priceRange[1]);
+    }
+
+    // Navigate to discover page with query parameters
+    navigate(`/discover?${queryParams.toString()}`);
   };
 
   return (
     <Section>
-      <Navbar show={true} /> {/* Pass 'show' prop as true */}
-
+      
       <div className="background">
         <img src={HeroImage} alt="Hero" />
       </div>
@@ -32,9 +77,18 @@ export default function Home() {
           <form>
             <div className="row">
               <label>Destinations</label>
-              <select>
-                <option>Arab Egypt</option>
-                <option>Udaipur India</option>
+              <select
+                value={selectedPlace}
+                onChange={(e) => setSelectedPlace(e.target.value)}
+              >
+                <option value="" disabled>
+                  Select a Destination
+                </option>
+                {places.map((place, index) => (
+                  <option key={index} value={place}>
+                    {place}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="row">
@@ -57,7 +111,7 @@ export default function Home() {
               <label>Price Range</label>
               <input
                 type="text"
-                value={`₹${priceRange[0]} - ₹${priceRange[1]}`}
+                value={`$${priceRange[0]} - $${priceRange[1]}`}
                 readOnly
               />
             </div>
@@ -68,35 +122,18 @@ export default function Home() {
                   className="horizontal-slider"
                   thumbClassName="example-thumb"
                   trackClassName="example-track"
-                  min={0}
+                  min={100} // Adjusted min to match database
                   max={10000}
                   step={100}
                   value={priceRange}
                   onChange={handleSliderChange}
                   pearling
-                  minDistance={500}
-                  renderTrack={(props, state) => {
-                    const left = `${(priceRange[0] / 10000) * 100}%`;
-                    const right = `${100 - (priceRange[1] / 10000) * 100}%`;
-
-                    return (
-                      <div
-                        {...props}
-                        className="example-track"
-                        style={{
-                          ...props.style,
-                          left: left,
-                          right: right,
-                          backgroundColor: '#ff715b', // Match slider track color
-                        }}
-                      />
-                    );
-                  }}
+                  minDistance={100} // Adjusted minDistance
                 />
               </SliderContainer>
             </div>
             <div className="row">
-              <Button text="Discover More" />
+              <Button text="Discover More" onClick={handleDiscoverMore} />
             </div>
           </form>
         </div>
@@ -113,6 +150,7 @@ const Section = styled.section`
     img {
       height: 90vh;
       width: 100%;
+      object-fit: cover; /* Ensures the image covers the container without distortion */
     }
   }
 
@@ -121,6 +159,7 @@ const Section = styled.section`
       position: absolute;
       top: 5rem;
       margin-left: 8rem;
+
       h1 {
         font-size: 5rem;
         margin-bottom: 2rem;
@@ -210,27 +249,33 @@ const Section = styled.section`
 const SliderContainer = styled.div`
   width: 100%;
   margin-top: 1rem;
+  display: flex; /* Add flexbox for alignment */
+  justify-content: center; /* Center align horizontally */
+  align-items: center; /* Center align vertically */
 
   .horizontal-slider {
     width: 100%;
     height: 5px;
     border-radius: 5px;
-    position: relative;
+    background-color: #f0f0f0; /* Add a light gray background for the slider line */
+    position: relative; /* Allow positioning of the thumbs relative to the track */
   }
 
   .example-thumb {
-    height: 15px;
-    width: 15px;
-    background-color: #ff715b; // Match thumb color with the button color
+    height: 20px;
+    width: 20px;
+    background-color: #ff715b;
     border-radius: 50%;
     cursor: pointer;
     position: absolute;
-    top: -5px;
+    top: 50%; /* Center the thumb vertically */
+    transform: translateY(-50%); /* Adjust for the height of the thumb */
+    z-index: 2; /* Ensure thumbs appear above the track */
   }
 
   .example-track {
+    background-color: #ff715b; /* Set a distinct color for the filled portion of the slider */
     height: 5px;
-    position: absolute; // Ensure it's positioned correctly
-    top: 0; // Align with the slider height
+    border-radius: 5px;
   }
 `;

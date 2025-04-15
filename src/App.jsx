@@ -9,10 +9,14 @@ import Offer from "./components/Offer";
 import ScrollToTop from "./components/ScrollToTop";
 import Services from "./components/Services";
 import Testimonial from "./components/Testimonial";
-import Tours from "./components/Tours"; 
-import SignUp from "./components/SignUp"; 
-import Forgot from "./components/Forgot"; 
-import Login from "./components/Login"; 
+import Tours from "./components/Tours";
+import SignUp from "./components/SignUp";
+import Forgot from "./components/Forgot";
+import Login from "./components/Login";
+import SearchResults from "./components/SearchResults"; // New component for search results
+import Discover from "./components/Discover"; // Ensure Discover component is imported
+import ChatPopup from "./components/ChatPopup"; // Import ChatPopup component
+import Flightbookings from "./components/Flightbookins";
 
 const App = () => {
   const location = useLocation();
@@ -37,9 +41,9 @@ const App = () => {
     <div>
       <ScrollToTop />
       {/* Render Navbar unless it's an auth page */}
-      {!isAuthPage && <Navbar />}
-      
-      {/* Define routes once */}
+      {!isAuthPage && <Navbar show={true} />} {/* Show navbar explicitly */}
+
+      {/* Define routes */}
       <Routes>
         {/* Authentication Routes */}
         <Route path="/" element={<Login />} />
@@ -48,21 +52,46 @@ const App = () => {
 
         {/* Home and related routes */}
         <Route
-          path="/home"
+  path="/home"
+  element={
+    <>
+      <Home />
+      <Services />
+      <Destinations scrollToTours={scrollToTours} />
+      <Offer />
+      <Tours ref={toursRef} />
+      <div style={{ marginBottom: "7rem" }}> {/* Add spacing here */}
+        <Flightbookings />
+      </div>
+      <div style={{ marginTop: "3rem" }}> {/* Add spacing here */}
+        <Testimonial />
+      </div>
+      <DownloadApp />
+      <Footer />
+      <ChatPopup /> {/* Add ChatPopup component here */}
+    </>
+  }
+/>
+
+
+        {/* Search Results Route */}
+        <Route
+          path="/search"
           element={
             <>
-              <Home />
-              <Services />
-              <Destinations scrollToTours={scrollToTours} />
-              <Offer />
-              <Tours ref={toursRef} />
-              <Testimonial />
-              <DownloadApp />
+              {/* Ensure Navbar is shown for SearchResults page */}
+              <SearchResults />
               <Footer />
             </>
           }
         />
+
+        {/* Discover Route */}
+        <Route path="/discover" element={<Discover />} />
       </Routes>
+
+      {/* Global ChatPopup for all pages */}
+      {!isAuthPage && <ChatPopup />} {/* Optionally, show it globally */}
     </div>
   );
 };
